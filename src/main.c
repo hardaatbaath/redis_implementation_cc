@@ -7,6 +7,10 @@
 #include <errno.h>
 #include <unistd.h>
 
+#define BUFFER_SIZE 1024
+
+char buffer[BUFFER_SIZE];
+
 int main() {
 	// Disable output buffering
 	setbuf(stdout, NULL);
@@ -53,14 +57,24 @@ int main() {
 	printf("Waiting for a client to connect...\n");
 	client_addr_len = sizeof(client_addr);
 	
-	int client_fd = accept(server_fd, (struct sockaddr *) &client_addr, (socklen_t *) &client_addr_len);
-	printf("Client connected\n");
-	
-	//respond to the client
-	char response[100];
-	strcpy(response, "+PONG\r\n");
-	send(client_fd, response, strlen(response), 0);
+	while (1) {
+		int client_fd = accept(server_fd, (struct sockaddr *) &client_addr, (socklen_t *) &client_addr_len);
+		if (client_fd < 0) { printf("Failed to accept client\n"); continue; }
+		printf("Client connected\n");
+		
+		while (1) {
+            memset(buffer, 0, BUFFER_SIZE);
+            if (read(client_fd, buffer, BUFFER_SIZE) <= 0) {
+                printf("Client disconnected\n");
+                break;
+            }
+            printf("Received command: %s", buffer);
 
+        	const char *msg = "+PONG\r\n";
+        	send(client_fd, msg, strlen(msg), 0);
+        }
+        close(client_fd);
+	}
 	close(server_fd);
 
 	return 0;
