@@ -63,6 +63,7 @@ int main() {
 		printf("Client connected\n");
 		
 		while (1) {
+			// Read command from the client
             memset(buffer, 0, BUFFER_SIZE);
             if (read(client_fd, buffer, BUFFER_SIZE) <= 0) {
                 printf("Client disconnected\n");
@@ -70,6 +71,7 @@ int main() {
             }
             printf("Received command: %s", buffer);
 
+			// Respond to the client
         	const char *msg = "+PONG\r\n";
         	send(client_fd, msg, strlen(msg), 0);
         }
