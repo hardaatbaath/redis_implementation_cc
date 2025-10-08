@@ -53,8 +53,9 @@ int main() {
 	printf("Waiting for a client to connect...\n");
 	client_addr_len = sizeof(client_addr);
 	
-	accept(server_fd, (struct sockaddr *) &client_addr, &client_addr_len);
+	accept(server_fd, (struct sockaddr *) &client_addr, (socklen_t *) &client_addr_len);
 	printf("Client connected\n");
+	printf("+PONG\r\n");	
 	
 	close(server_fd);
 
