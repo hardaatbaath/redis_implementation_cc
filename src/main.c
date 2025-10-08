@@ -57,7 +57,9 @@ int main() {
 	printf("Client connected\n");
 	
 	//respond to the client
-	send(client_fd, "+PONG\\r\\n", 8, 0);
+	char response[100];
+	strcpy(response, "+PONG\r\n");
+	send(client_fd, response, strlen(response), 0);
 
 	close(server_fd);
 
