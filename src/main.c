@@ -73,7 +73,11 @@ int main() {
 
 			// Respond to the client
         	const char *msg = "+PONG\r\n";
-        	send(client_fd, msg, strlen(msg), 0);
+        	ssize_t bytes_written = write(client_fd, msg, strlen(msg));
+        	if (bytes_written < 0) {
+            	printf("Failed to write to client: %s\n", strerror(errno));
+            	break;
+        	}
         }
         close(client_fd);
 	}
